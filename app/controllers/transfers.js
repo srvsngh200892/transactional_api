@@ -17,13 +17,6 @@ async function makeTransfer(req, res, next) {
         return res.status(201).json(response)
 
     } catch(error) {
-        if (idempotentKey) {
-            try {
-               await redisClient.setAsync(idempotentKey, JSON.stringify(error));
-            } catch(e) {
-               return res.status(error.statusCode).json(error);  
-            }    
-         }
         return res.status(error.statusCode).json(error);
     }
 
