@@ -7,7 +7,7 @@ let {router} = require('./config/router');
 
 let app = express();
 
-app.use(logger('dev'));
+app.use(logger('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
