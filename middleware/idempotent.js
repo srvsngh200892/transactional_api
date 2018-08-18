@@ -1,4 +1,5 @@
 'use strict';
+
 let {internalServerError} = require('../lib/errors/http_errors/internalServerError');
 const redisClient = require('../config/redis-client');
 
@@ -19,6 +20,5 @@ async function idemptency(req, res, next) {
   }
   next();
 }
-
 
 module.exports = {idemptency};
