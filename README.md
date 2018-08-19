@@ -14,7 +14,7 @@ Things you need to know for this application :
 
 ```
 * Open mysql and create database and table
-    - CREATE DATABASE IF NOT EXISTS Music;
+    - CREATE DATABASE IF NOT EXISTS banking;
     - CREATE TABLE IF NOT EXISTS  balances ( account_nr int NOT NULL AUTO_INCREMENT, balance int  unsigned NOT NULL DEFAULT 0, PRIMARY KEY(account_nr));
     - CREATE TABLE IF NOT EXISTS  transactions (reference int NOT NULL AUTO_INCREMENT , amount int NOT NULL , account_nr int NOT NULL , PRIMARY KEY(reference) , FOREIGN KEY (account_nr) REFERENCES balances(account_nr));
     - Insert two accounts and balance like 
