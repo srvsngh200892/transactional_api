@@ -51,7 +51,7 @@ Things you need to know for this application :
  ```
  ## Why i changed error response
    ```
-    Just send client transaction id, so that they can perform get request. Check about success response structure.
+    Just send client transaction id, so that they can perform get request. Check above success response structure.
     
    ```
  
@@ -74,15 +74,16 @@ Things you need to know for this application :
        - Server intercept the resquest at middleware level and find key in redis 
          - if key exist then server send the same respone back to client. 
          - If key doesn't exits sever middleware  pass the request to controller to continue with request.
+         - Expire the key after 24 hours
        
-    **This way if user double click or client send the same request again, it won't create duplicate request.
+    **This way if user double click or client send the same request again, it won't create duplicate transaction record.
     
     ***Many payment gateway follow this approach like STRIPE, PAYPAL etc
    ``` 
     
   ## Why i choose redis to store idempotent-key
      ``` 
-      Redis is one of the best in-memory database and it's easy to expire key as we won't need this data for long.
+      Redis is one of the best in-memory database and it's easy to expire key and we don't need this data for long.
      ```
   
   ## How i handle two conncurrent request
@@ -97,13 +98,13 @@ Things you need to know for this application :
            Instead it puts a soft lock on those rows, which stops other transactions from modifying these rows, 
            but they can run select statements, and once your transaction commits, will use the new values to continue.
            
-        * currently i have implemented solution with using FOR UPDATE and 
+        * currently i have implemented solution using FOR UPDATE and 
           if there are performance issues, then will think of  possibly using SHARE MODE.
      ```
   
   ## How i handle errors (Implemented inside #lib/http_errors)
      ```
-      * I have created a different http error inside lib flolder
+      * I have created a different http errosr inside lib flolder
      ```
  
  ## Different Validation ( Implemented inside #validation/transfer.js)
