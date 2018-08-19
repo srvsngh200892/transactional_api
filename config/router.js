@@ -8,6 +8,6 @@ router.get('/', function (req, res, next) {
     res.status(200).json({'message': 'Welcome to banking open api'});
 });
 
-router.post('/transactions/', idemptency, makeTransfer);
+router.post('/transfers/', idemptency, makeTransfer);
 
 module.exports = {router};
