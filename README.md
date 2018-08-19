@@ -9,8 +9,10 @@ Things you need to know for this application :
 * cd ~/path/transactional_api     # Change to the source directory
 * npm install                     # Install package manager
 * cp .env.example .env            # Copy example configuration
+* add correct config              # change config
 * brew install mysql              # install mysql
 * brew insall redis               # install redis
+* brew insall mysql               # install mysql
 
 ```
 * Open mysql and create database and table
