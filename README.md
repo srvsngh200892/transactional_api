@@ -12,7 +12,7 @@ Things you need to know for this application :
 * add correct config              # change config
 * brew install mysql              # install mysql
 * brew insall redis               # install redis
-* brew insall mysql               # install mysql
+* brew services start mysql       # start mysql
 
 ```
 * Open mysql and create database and table
@@ -70,7 +70,10 @@ Things you need to know for this application :
     - I have made post request idempotent in nature by creating a middleware which does following
     
     - For every POST request client send to server it include particular header
-       # idempotent-key : random uuid4();
+       # idempotent-key : random uuid4();  (unique) 
+       
+       **P.S right now this header is not mandatory as i want you guyz to test both the cases. Like if you don't send this
+       and click twice, what will happen and vice versa. Later i will make this mandatory **
        
     - Server store this key and respone of request inside redis (key-vaue pair). Key expires in 24 hours.
     
