@@ -32,7 +32,7 @@ Things you need to know for this application :
  * Open Postman
  ```
   - Select Method POST
-  - api endpoint - localhost:3000/transactions
+  - api endpoint - http://localhost:3000/transactions
   - Headers
     - Content-Type : application/json
     - idempotent-key : random uuid4();    # Recommended to send ( Make Post request Idempotent ), If not send make post request retry dangerous
