@@ -10,18 +10,24 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
 	return new Promise(async (resolve, reject) => { // <--- this line
 
 		const dbConn = await dbConnection();
+
 	    try {
+
 	        await dbConn.beginTransaction();
 	        // Use execute as it runs a prepared statement which allows you to bind parameters to avoid SQL injection
 	        let [[senderAccountRow]] = await dbConn.execute('Select account_nr, balance FROM balances WHERE account_nr = ? FOR UPDATE', [senderIban]);
 	        let [[receiverAccountRow]] = await dbConn.execute('Select account_nr, balance FROM balances WHERE account_nr = ? FOR UPDATE', [receiverIban]);
 	        
 	        if (!senderAccountRow || !receiverAccountRow) {
+
+               // remove the lock
 	            await dbConn.rollback();
 	            return reject(new resourceNotFound());
 	        }
 
 	        if (senderAccountRow.balance < transferAmount) {
+
+               // remove the lock
 	            await dbConn.rollback();
 	            return reject(new notAcceptable('Insufficient funds'));
 	        }
@@ -40,7 +46,6 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
             
             await dbConn.execute('INSERT INTO transactions (amount, account_nr) VALUES ( ?, ?)', [transferAmount, receiverIban]);
             
-	        await dbConn.commit();
 
             let response =  { "success": true, 
                               "transaction_reference": senderTransaction.insertId,
@@ -54,11 +59,16 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
 	            await redisClient.expireAsync(idempotentKey, process.env.KEY_EXPIRE_TIME)
 	        } 
             
+            await dbConn.commit();
 	        return resolve(response)
 
 	    } catch (error) {
+
 	    	console.log(error)
+
+            // remove the lock
 	        await dbConn.rollback();
+
 	        return reject(new internalServerError());
 	    }
     });
