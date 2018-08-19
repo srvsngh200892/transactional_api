@@ -3,7 +3,7 @@
 const redis = require('redis');
 const {promisify} = require('util');
 const client = redis.createClient(process.env.REDIS_URL, {
-	connection_strategy: function (options) {
+    connection_strategy: function (options) {
         if (options.total_retry_time > 1000 * 60 * 60) {
             // kill the client with the error event
             return new Error('Retry time exhausted');
