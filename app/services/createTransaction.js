@@ -44,7 +44,7 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
 	            return reject(new notAcceptable('Insufficient funds'));
 	        }
 	        
-	        // update the sender balance
+	        // update the sender balances
 	        await dbConn.execute('UPDATE balances SET balance = balance - ?  WHERE account_nr = ?', [transferAmount, senderIban]);
 	        
 	        // update the sender balance
