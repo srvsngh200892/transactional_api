@@ -14,18 +14,30 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
 	    try {
 
 	        await dbConn.beginTransaction();
+
 	        // Use execute as it runs a prepared statement which allows you to bind parameters to avoid SQL injection
-	        let [[senderAccountRow]] = await dbConn.execute('Select account_nr, balance FROM balances WHERE account_nr = ? FOR UPDATE', [senderIban]);
-	        let [[receiverAccountRow]] = await dbConn.execute('Select account_nr, balance FROM balances WHERE account_nr = ? FOR UPDATE', [receiverIban]);
+	        // as account_nr is primary and index it will accquire lock in order
+	        let [[accountA, accountB]] = await dbConn.execute('Select account_nr, balance FROM balances WHERE account_nr IN (?, ?) FOR UPDATE', [senderIban, receiverIban]);
+
 	        
-	        if (!senderAccountRow || !receiverAccountRow) {
+	        if (!accountA || !accountB) {
 
                // remove the lock
 	            await dbConn.rollback();
 	            return reject(new resourceNotFound());
 	        }
 
-	        if (senderAccountRow.balance < transferAmount) {
+	        if (accountA.account_nr == senderIban) {
+
+                var senderAccount = accountA
+
+	        } else {
+
+                var senderAccount = accountB
+
+	        }
+
+	        if (senderAccount.balance < transferAmount) {
 
                // remove the lock
 	            await dbConn.rollback();
@@ -34,17 +46,15 @@ function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey)
 	        
 	        // update the sender balance
 	        await dbConn.execute('UPDATE balances SET balance = balance - ?  WHERE account_nr = ?', [transferAmount, senderIban]);
-
-	        // insert the sender transaction history
-	        await dbConn.execute('INSERT INTO transactions (amount, account_nr) VALUES ( ?, ?)', [transferAmount, senderIban]);
 	        
 	        // update the sender balance
 	        await dbConn.execute('UPDATE balances SET balance = balance + ?  WHERE account_nr = ?', [transferAmount, receiverIban]);
 
 	        // insert the sender transaction history
+	        await dbConn.execute('INSERT INTO transactions (amount, account_nr) VALUES ( ?, ?)', [transferAmount, senderIban]);
+
+	        // insert the receiver transaction history
 	        const [senderTransaction] = await dbConn.execute('INSERT INTO transactions (amount, account_nr) VALUES ( ?, ?)', [transferAmount, receiverIban]);
-            
-            await dbConn.execute('INSERT INTO transactions (amount, account_nr) VALUES ( ?, ?)', [transferAmount, receiverIban]);
             
 
             let response =  { "success": true, 
