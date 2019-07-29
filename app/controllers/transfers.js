@@ -1,5 +1,5 @@
-let {makeTransferValidator} = require('../validators/transfers');
-let {createTransfer} = require('../services/createTransaction');
+const {makeTransferValidator} = require('../validators/transfers');
+const {createTransfer} = require('../services/createTransaction');
 const redisClient = require('../../config/redis-client');
 
 async function makeTransfer(req, res, next) {
