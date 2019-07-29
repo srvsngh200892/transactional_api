@@ -2,9 +2,9 @@
 
 const {dbConnection} = require("../../config/database");
 const redisClient = require('../../config/redis-client');
-let {internalServerError} = require('../../lib/errors/http_errors/internalServerError');
-let {notAcceptable} = require('../../lib/errors/http_errors/notAcceptable');
-let {resourceNotFound} = require('../../lib/errors/http_errors/resourceNotFound');
+const {internalServerError} = require('../../lib/errors/http_errors/internalServerError');
+const {notAcceptable} = require('../../lib/errors/http_errors/notAcceptable');
+const {resourceNotFound} = require('../../lib/errors/http_errors/resourceNotFound');
 
 function createTransfer(senderIban, receiverIban, transferAmount, idempotentKey) {
 	return new Promise(async (resolve, reject) => { // <--- this line
