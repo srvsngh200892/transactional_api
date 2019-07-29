@@ -1,6 +1,6 @@
 'use strict';
-let {badRequest} = require('../../lib/errors/http_errors/badRequest');
-let {forbidden} = require('../../lib/errors/http_errors/forbidden');
+const {badRequest} = require('../../lib/errors/http_errors/badRequest');
+const {forbidden} = require('../../lib/errors/http_errors/forbidden');
 
 function makeTransferValidator(senderIban, receiverIban, transferAmount) {
   return new Promise(function(resolve, reject) {
