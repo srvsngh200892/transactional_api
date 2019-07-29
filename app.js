@@ -1,11 +1,11 @@
 require('dotenv').config();
 
-let express = require('express');
-let logger = require('morgan');
-let {resourceNotFound} = require('./lib/errors/http_errors/resourceNotFound');
-let {router} = require('./config/router');
+const express = require('express');
+const logger = require('morgan');
+const {resourceNotFound} = require('./lib/errors/http_errors/resourceNotFound');
+const {router} = require('./config/router');
 
-let app = express();
+const app = express();
 
 app.use(logger('combined'));
 app.use(express.json());
